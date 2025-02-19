@@ -89,7 +89,6 @@
 // };
 
 // export default UploadFile
-import { NextResponse } from 'next/server';
 import React, { ChangeEvent, FormEvent, useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -105,7 +104,7 @@ function UploadFile({id}:{id:string}){
         if (total > 0) {
             setProgress((uploaded / total) * 100);
         }
-    }, [uploaded, total]);
+    }, [id,uploaded, total]);
 
     function handleFileChange(event: ChangeEvent<HTMLInputElement>): void {
         if (event.target.files) {

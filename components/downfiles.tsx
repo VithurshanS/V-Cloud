@@ -37,7 +37,7 @@ function Downfile({ id }: { id: string }) {
             }
         };
         fetchData();
-    }, [get]);
+    }, [get,id]);
 
     async function startDownload(element: File) {
         const Ff = new FormData();
@@ -83,7 +83,7 @@ function Downfile({ id }: { id: string }) {
             }, 5000);
             return () => clearTimeout(timer);
         }
-    }, [dsuccess]);
+    }, [dsuccess,id]);
 
     async function startshare() {
         async function share(file_id: string, fname: string) {

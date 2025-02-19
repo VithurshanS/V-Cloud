@@ -219,7 +219,7 @@ const Dashboard = () => {
     }
 
     fetchUser();
-  }, []);
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-base-300">
