@@ -27,7 +27,7 @@
 //       try {
 //         const ff = new FormData()
 //         ff.append("token",token);
-//         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/authenticate`, {
+//         const response = await fetch(`https://backend.shancloudservice.com/authenticate`, {
 //           method: 'POST',
 //           // headers: {
 //           //   'Content-Type': 'application/x-www-form-urlencoded',
@@ -113,7 +113,7 @@
 //       try {
 //         const ff = new FormData()
 //         ff.append("token",token);
-//         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/authenticate`, {
+//         const response = await fetch(`https://backend.shancloudservice.com/authenticate`, {
 //           method: 'POST',
 //           // headers: {
 //           //   'Content-Type': 'application/x-www-form-urlencoded',
@@ -200,7 +200,7 @@ const Dashboard = () => {
       try {
         const ff = new FormData()
         ff.append("token",token);
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/authenticate`, {
+        const response = await fetch(`https://backend.shancloudservice.com/authenticate`, {
           method: 'POST',
           body: ff
         }) as NextResponse;

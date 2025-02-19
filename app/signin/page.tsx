@@ -23,7 +23,7 @@ const Form = () => {
       formData.append("email", username);
       formData.append("password", password);
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/signin`, {
+      const response = await fetch(`https://backend.shancloudservice.com/signin`, {
         method: 'POST',
         body: formData,
       });

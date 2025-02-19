@@ -28,7 +28,7 @@
 //         fd.append("packet_index", String(packet_index));
 //         fd.append("uuid",uuidd);
 //         // fd.append("total", String(total_packets));
-//         const res: Response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/upload`, {
+//         const res: Response = await fetch(`https://backend.shancloudservice.com/upload`, {
 //             method: 'POST',
 //             body: fd
 //         });
@@ -49,7 +49,7 @@
 
 //         init_up_data.append("uuid",newUuid);
 //         console.log("upload init");
-//         await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/init-upload`, {
+//         await fetch(`https://backend.shancloudservice.com/init-upload`, {
 //                     method: 'POST',
 //                     body: init_up_data
 //                 });
@@ -63,7 +63,7 @@
 //         ss.append("filename", file.name);
 //         ss.append("uuid",newUuid);
 //         ss.append("user_id",id);
-//         await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/complete-upload`, { method: "POST", body: ss });
+//         await fetch(`https://backend.shancloudservice.com/complete-upload`, { method: "POST", body: ss });
 //         setUploaded(0);
 //         setTotal(0);
         
@@ -117,7 +117,7 @@ function UploadFile({id}:{id:string}){
         fd.append("file", file);
         fd.append("packet_index", String(packet_index));
         fd.append("uuid", uuidd);
-        const res: Response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/upload`, {
+        const res: Response = await fetch(`https://backend.shancloudservice.com/upload`, {
             method: 'POST',
             body: fd
         });
@@ -136,7 +136,7 @@ function UploadFile({id}:{id:string}){
         const init_up_data = new FormData();
         init_up_data.append("uuid", newUuid);
         
-        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/init-upload`, {
+        await fetch(`https://backend.shancloudservice.com/init-upload`, {
             method: 'POST',
             body: init_up_data
         });
@@ -152,7 +152,7 @@ function UploadFile({id}:{id:string}){
         ss.append("filename", file.name);
         ss.append("uuid", newUuid);
         ss.append("user_id", id);
-        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/complete-upload`, { 
+        await fetch(`https://backend.shancloudservice.com/complete-upload`, { 
             method: "POST", 
             body: ss 
         });

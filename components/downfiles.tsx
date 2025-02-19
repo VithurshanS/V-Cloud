@@ -23,7 +23,7 @@ function Downfile({ id }: { id: string }) {
             const fd = new FormData();
             console.log("id is ", id);
             fd.append("user_id", id);
-            const res: Response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/get-files`, { method: "POST", body: fd });
+            const res: Response = await fetch(`https://backend.shancloudservice.com/get-files`, { method: "POST", body: fd });
             if (res.status === 200) {
                 const data = await res.json();
                 if (data != null) {
@@ -43,7 +43,7 @@ function Downfile({ id }: { id: string }) {
         const Ff = new FormData();
         setdown(element);
         Ff.append("fileid", element.id);
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/download`, { method: "POST", body: Ff });
+        const response = await fetch(`https://backend.shancloudservice.com/download`, { method: "POST", body: Ff });
 
         if (!response.ok) {
             alert("Failed to download file");
@@ -90,7 +90,7 @@ function Downfile({ id }: { id: string }) {
             const fd = new FormData();
             fd.append("fmail", fname);
             fd.append("file_id", file_id);
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/share`, { method: "POST", body: fd });
+            const res = await fetch(`https://backend.shancloudservice.com/share`, { method: "POST", body: fd });
             console.log(res.ok ? "success" : "not shared");
         }
 
@@ -193,7 +193,7 @@ export default Downfile;
 //         try {
 //             const fd = new FormData();
 //             fd.append("user_id", id);
-//             const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/get-files`, {
+//             const res = await fetch(`https://backend.shancloudservice.com/get-files`, {
 //                 method: "POST",
 //                 body: fd
 //             });
@@ -211,7 +211,7 @@ export default Downfile;
 //             setDownloading(true);
 //             const fd = new FormData();
 //             fd.append("fileid", file.id);
-//             const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/download`, {
+//             const response = await fetch(`https://backend.shancloudservice.com/download`, {
 //                 method: "POST",
 //                 body: fd
 //             });
@@ -257,7 +257,7 @@ export default Downfile;
 //                 const fd = new FormData();
 //                 fd.append("fmail", email);
 //                 fd.append("file_id", file.id);
-//                 const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/share`, {
+//                 const res = await fetch(`https://backend.shancloudservice.com/share`, {
 //                     method: "POST",
 //                     body: fd
 //                 });
