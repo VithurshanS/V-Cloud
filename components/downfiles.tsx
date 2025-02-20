@@ -84,6 +84,15 @@ function Downfile({ id }: { id: string }) {
             return () => clearTimeout(timer);
         }
     }, [dsuccess,id]);
+    async function deletefile(fileid:string) {
+        const fd = new FormData();
+        fd.append("file_id",fileid);
+        const res = await fetch(`https://backend.shancloudservice.com/deletefile`,{method:"POST",body:fd});
+        console.log(res.ok ? "success" : "not deleted");
+        if(res.ok){
+            setget((pr)=>pr+1);
+        }
+    }
 
     async function startshare() {
         async function share(file_id: string, fname: string) {
@@ -125,7 +134,7 @@ function Downfile({ id }: { id: string }) {
                                     )}
                                 />
                                 </td>
-                                <td>{element.actualname}</td>
+                                <td>{element.actualname+"."+element.filetype}</td>
                                 <td>
                                 {downloading && progress > 0 && selectedfordownload?.id === element.id ? (
                                     <div className="radial-progress text-primary" style={{ "--value": `${progress}` } as React.CSSProperties} role="progressbar">
@@ -136,6 +145,9 @@ function Downfile({ id }: { id: string }) {
                                         Download
                                     </button>
                                 )}
+                                </td>
+                                <td>
+                                    <button className="btn btn-error" onClick={()=>{deletefile(element.id)}}>Delete</button>
                                 </td>
                            
                             </tr>
@@ -149,14 +161,15 @@ function Downfile({ id }: { id: string }) {
             {fidforshare.length > 0 && (
                 <div>
                     <form>
-                        <input 
-                            type="email" 
-                            placeholder="Enter email" 
-                            value={femail} 
-                            onChange={(e) => setfemail(e.target.value)} 
-                            required 
+                    <input
+                        type="text"
+                        placeholder="Enter Mail"
+                        className="input input-bordered input-primary w-full max-w-xs" 
+                        value={femail} 
+                        onChange={(e) => setfemail(e.target.value)} 
+                        required 
                         />
-                        <button type="button" onClick={startshare}>Share</button>
+                        <button type="button" onClick={startshare} className="btn btn-outline btn-secondary">Share</button>
                     </form>
                 </div>
             )}
