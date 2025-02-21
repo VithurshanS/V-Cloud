@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
     try {
       // Verify token with your backend
       const pp = new FormData()
-      pp.append("token", token || '')
+      pp.append("token", token || 'poda')
       const response = await fetch(`https://backend.shancloudservice.com/authenticate`, {
         method: 'POST',
         body: pp,
