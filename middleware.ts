@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { cookies } from 'next/headers';
 
 export async function middleware(request: NextRequest) {
-const token = request.cookies.get('token')
-console.log(token)
+  const token = (await cookies()).get('token')?.value;
+  console.log(token)
   const isMainPage = request.nextUrl.pathname === '/'
   const isAuthPage = request.nextUrl.pathname === '/signin' || request.nextUrl.pathname === '/signup'
 
@@ -11,10 +12,9 @@ console.log(token)
     try {
       // Verify token with your backend
       const pp = new FormData()
-      pp.append("token", token?.value || '')
+      pp.append("token", token || '')
       const response = await fetch(`https://backend.shancloudservice.com/authenticate`, {
         method: 'POST',
-        credentials: "include",
         body: pp,
       })
 
