@@ -175,9 +175,10 @@
 
 import { useEffect, useState } from 'react';
 import { NextResponse } from 'next/server';
-import Downfile from '@/components/downfiles';
+//import Downfile from '@/components/downfiles';
 import UploadFile from '@/components/uploadfile';
 import { useRouter } from 'next/navigation';
+import Downfile from '@/components/downfiles';
 
 interface TokenUser {
   id: string;
@@ -187,11 +188,13 @@ interface TokenUser {
 const Dashboard = () => {
   const router = useRouter();
   const [user, setUser] = useState<TokenUser>();
+  const [usersize,setupdatefiles] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     async function fetchUser() {
-      const token = localStorage.getItem('token');
+      const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
+      console.log("ddd",token)
       if (!token) {
         router.push('/signin');
         return;
@@ -220,7 +223,10 @@ const Dashboard = () => {
 
     fetchUser();
   }, [router]);
-
+  function roundUpToDecimals(value: number, decimals: number) {
+    const factor = Math.pow(10, decimals);
+    return Math.ceil(value * factor) / factor;
+  }
   return (
     <div className="min-h-screen bg-base-300">
       <div className="navbar bg-base-200/50 backdrop-blur-sm">
@@ -264,7 +270,7 @@ const Dashboard = () => {
             <div className="stats shadow bg-base-200/50 backdrop-blur-sm w-full">
               <div className="stat">
                 <div className="stat-title">Storage Used</div>
-                <div className="stat-value text-primary">25.6 GB</div>
+                <div className="stat-value text-primary">{usersize>1000 ? roundUpToDecimals(usersize/1024,2) + " GB": roundUpToDecimals(usersize,2) + " MB"}</div>
                 <div className="stat-desc">of 100 GB</div>
                 <progress className="progress progress-primary w-full mt-2" value="25" max="100"></progress>
               </div>
@@ -287,7 +293,7 @@ const Dashboard = () => {
                   </svg>
                   Upload Files
                 </h2>
-                <UploadFile id={user.id} />
+                <UploadFile id={user.id} uppd = {setupdatefiles} />
               </div>
             </div>
 
@@ -300,7 +306,7 @@ const Dashboard = () => {
                   </svg>
                   Your Files
                 </h2>
-                <Downfile id={user.id} />
+                <Downfile id={user.id} upd={setupdatefiles} num={usersize}/>
               </div>
             </div>
           </div>

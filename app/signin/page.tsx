@@ -35,7 +35,7 @@ const Form = () => {
 
       const data = await response.json();
       if (data.token) {
-        localStorage.setItem('token', data.token);
+        document.cookie = `token=${data.token}; path=/;`;
         setStatus("Login success 🎉");
         router.push('/dashboard');
       } else {

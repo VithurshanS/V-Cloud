@@ -8,7 +8,7 @@ interface File {
     date: string;
 }
 
-function Downfile({ id }: { id: string }) {
+function Downfile({ id,upd,num }: { id: string ,upd:(nu:number)=>void,num:number}) {
     const [get, setget] = useState<number>(0);
     const [filelist, setfilelist] = useState<File[]>([]);
     const [downloading, setDownloading] = useState<boolean>(false);
@@ -17,7 +17,6 @@ function Downfile({ id }: { id: string }) {
     const [fidforshare, setfidforshare] = useState<File[]>([]);
     const [dsuccess, setdsuccess] = useState<boolean>(false);
     const [femail, setfemail] = useState<string>("");
-
     useEffect(() => {
         const fetchData = async () => {
             const fd = new FormData();
@@ -29,6 +28,8 @@ function Downfile({ id }: { id: string }) {
                 if (data != null) {
                     console.log("ommm");
                     const x = data.files as File[];
+                    const hh:number = parseFloat(data.size);
+                    upd(hh);
                     setfilelist(x || []);
                 } else {
                     setfilelist([]);
@@ -37,7 +38,7 @@ function Downfile({ id }: { id: string }) {
             }
         };
         fetchData();
-    }, [get,id]);
+    }, [get,id,num,upd]);
 
     async function startDownload(element: File) {
         const Ff = new FormData();
@@ -101,11 +102,21 @@ function Downfile({ id }: { id: string }) {
             fd.append("file_id", file_id);
             const res = await fetch(`https://backend.shancloudservice.com/share`, { method: "POST", body: fd });
             console.log(res.ok ? "success" : "not shared");
+            if (res.ok) {
+                const successMessage = document.createElement("div");
+                successMessage.className = "alert alert-success";
+                successMessage.innerText = "File shared successfully.";
+                document.body.appendChild(successMessage);
+                setTimeout(() => {
+                    document.body.removeChild(successMessage);
+                }, 5000);
+            }
         }
 
         if (fidforshare.length > 0 && femail) {
             fidforshare.forEach(element => share(element.id, femail));
         }
+
     }
 
     return (

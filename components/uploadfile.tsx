@@ -1,3 +1,4 @@
+'use client'
 // import { NextResponse } from 'next/server';
 // import React, { ChangeEvent, FormEvent, useState, useEffect } from 'react';
 // import { v4 as uuidv4 } from 'uuid';
@@ -92,14 +93,13 @@
 import React, { ChangeEvent, FormEvent, useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-function UploadFile({id}:{id:string}){
+function UploadFile({id,uppd}:{id:string,uppd:(sizee:number)=>void}){
     const [file, setFile] = useState<File | null>(null);
     const [uploaded, setUploaded] = useState<number>(0);
     const [total, setTotal] = useState<number>(0);
     const [progress, setProgress] = useState<number>(0);
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const packet_size = 1024*1024;
-
     useEffect(() => {
         if (total > 0) {
             setProgress((uploaded / total) * 100);
@@ -112,7 +112,7 @@ function UploadFile({id}:{id:string}){
         }
     }
 
-    async function uploadPacket(file: Blob, packet_index: number, total_packets: number, uuidd:string) {
+    async function uploadPacket(file: Blob, packet_index: number, total_packets: number, uuidd:string){
         const fd = new FormData();
         fd.append("file", file);
         fd.append("packet_index", String(packet_index));
@@ -141,23 +141,29 @@ function UploadFile({id}:{id:string}){
             body: init_up_data
         });
 
-        for (let i = 0; i < total_packets; i++) {
+        for (let i = 0; i < total_packets;i++) {
             const start = i * packet_size;
             const end = Math.min(start + packet_size, file.size);
             const packet = file.slice(start, end);
             await uploadPacket(packet, i, total_packets, newUuid);
+
         }
 
         const ss = new FormData();
         ss.append("filename", file.name);
         ss.append("uuid", newUuid);
         ss.append("user_id", id);
-        await fetch(`https://backend.shancloudservice.com/complete-upload`, { 
+        const res: Response = await fetch(`https://backend.shancloudservice.com/complete-upload`, { 
             method: "POST", 
             body: ss 
         });
-        
-        setUploaded(0);
+        if(!res.ok){
+            return;
+        }
+        const data = await res.json();
+        const tt: number = parseFloat(data.size);
+        uppd(tt);
+         setUploaded(0);
         setTotal(0);
         setFile(null);
     }
