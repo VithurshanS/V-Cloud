@@ -14,6 +14,7 @@ console.log(token)
       pp.append("token", token?.value || '')
       const response = await fetch(`https://backend.shancloudservice.com/authenticate`, {
         method: 'POST',
+        credentials: "include",
         body: pp,
       })
 
