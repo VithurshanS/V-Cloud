@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 
 export async function middleware(request: NextRequest) {
   const token = (await cookies()).get('token')?.value;
-  console.log(token)
+  //console.log(token)
   const isMainPage = request.nextUrl.pathname === '/'
   const isAuthPage = request.nextUrl.pathname === '/signin' || request.nextUrl.pathname === '/signup'
 
@@ -12,8 +12,8 @@ export async function middleware(request: NextRequest) {
     try {
       // Verify token with your backend
       const pp = new FormData()
-      pp.append("token", token || 'poda')
-      const response = await fetch(`https://backend.shancloudservice.com/authenticate`, {
+      pp.append("token", token || '')
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/authenticate`, {
         method: 'POST',
         body: pp,
       })

@@ -2,14 +2,13 @@
 
 import Link from 'next/link';
 import React, { FormEvent, useState } from 'react';
-import {useRouter} from 'next/navigation'
-//import { DarkThemeToggle } from "flowbite-react";
+import { useRouter } from 'next/navigation';
 
-const Formi = () => {
+const Signup = () => {
   const router = useRouter();
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [notify,setnotify] = useState<number>(2);
+  const [notify, setNotify] = useState<number>(2);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -23,20 +22,20 @@ const Formi = () => {
         const formData = new FormData();
         formData.append("email", username);
         formData.append("password", password);
-      const response = await fetch( `https://backend.shancloudservice.com/signup`, {
+      const response = await fetch( `${process.env.NEXT_PUBLIC_BACKEND_URL}/signup`, {
         method: 'POST',
         body: formData,
       });
 
       if (response.status !== 200) {
-        setnotify(0);
+        setNotify(0);
         //throw new Error('Failed to register user');
         
       }
 
       const data = await response.json();
       console.log('User registered:', data);
-      setnotify(1);
+      setNotify(1);
       router.push('/signin');
 
     } catch (err) {
@@ -45,66 +44,85 @@ const Formi = () => {
   }
 
   return (
-    <div
-      className="flex justify-center items-center min-h-screen bg-cover bg-center"
-      //style={{ backgroundImage: "url('/bgimg.jpg')" }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        className="bg-gradient-to-b from-blue-700 to-blue-400 px-11 py-6 rounded-2xl shadow-xl w-96"
-      >
-        <h2 className="text-3xl font-bold text-white text-center mb-2">Sign Up</h2>
-
-        <div className="mb-2 pt-5">
-          <label className="block text-white mb-1" htmlFor="username">
-            Username
-          </label>
-          <input
-            id="username"
-            type="text"
-            name="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full p-2 rounded-lg bg-blue-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter your username"
-          />
+    
+    <div className="min-h-screen bg-base-300 bg-cover bg-blend-soft-light flex flex-col items-center justify-center px-6 py-12 lg:px-8" style={{ backgroundImage: "url('/4882066.jpg')" }}>
+      <div className="w-full max-w-md bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20">
+        <div className="mb-8 text-center">
+          <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
+          <p className="text-gray-400">Join our community today</p>
         </div>
 
-        <div className="mb-4">
-          <label className="block text-white mb-1" htmlFor="password">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 rounded-lg bg-blue-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter your password"
-          />
-        </div>
-        <div className='flex flex-row'>
-        <button type="submit" className="text-white h-12 bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-3 text-center me-2 mb-2 mt-4 w-3/4">
-            <span className="mr-2">🔅</span> Sign Up
-          </button>
-          <Link
-            href="/signin"
-            className="w-1/4 ml-3 h-12 bg-green-800 text-white p-3 rounded-lg mt-4 hover:bg-gray-800 hover:shadow-lg transition-all flex justify-center items-center"
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-300" htmlFor="username">
+              Email Address
+            </label>
+            <input
+              type="text"
+              name="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition duration-200"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-300" htmlFor="password">
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition duration-200"
+              placeholder="Create a password"
+              required
+            />
+          </div>
+
+          {/* <div className="space-y-4">
+            <label className="flex items-start">
+              <input type="checkbox" className="mt-1 w-4 h-4 rounded border-gray-600 bg-gray-700 text-blue-500" />
+              <span className="ml-2 text-sm text-gray-400">
+                I agree to the Terms of Service and Privacy Policy
+              </span>
+            </label>
+          </div> */}
+
+          <button
+            type="submit"
+            className="w-full py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium transition duration-200 transform hover:scale-[1.02]"
           >
-            Login
-          </Link>
-           
+            Create Account
+          </button>
+        </form>
 
-
-
+        <div className="mt-6 text-center">
+          <p className="text-gray-400">
+            Already have an account?{' '}
+            <Link href="/signin" className="text-blue-400 hover:text-blue-300 font-medium">
+              Sign in
+            </Link>
+          </p>
         </div>
 
-        
-      </form>
-      <div><p>{notify}</p></div>
+        {notify !== 2 && (
+          <div className="mt-4 text-center">
+            <div className={`px-4 py-2 rounded-lg ${
+              notify === 1 
+                ? 'bg-green-500/20 text-green-400'
+                : 'bg-red-500/20 text-red-400'
+            }`}>
+              {notify === 1 ? 'Registration successful! 🎉' : 'Registration failed ❌'}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
-export default Formi;
+export default Signup;

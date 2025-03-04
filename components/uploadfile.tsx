@@ -29,7 +29,7 @@
 //         fd.append("packet_index", String(packet_index));
 //         fd.append("uuid",uuidd);
 //         // fd.append("total", String(total_packets));
-//         const res: Response = await fetch(`https://backend.shancloudservice.com/upload`, {
+//         const res: Response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/upload`, {
 //             method: 'POST',
 //             body: fd
 //         });
@@ -50,7 +50,7 @@
 
 //         init_up_data.append("uuid",newUuid);
 //         console.log("upload init");
-//         await fetch(`https://backend.shancloudservice.com/init-upload`, {
+//         await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/init-upload`, {
 //                     method: 'POST',
 //                     body: init_up_data
 //                 });
@@ -64,7 +64,7 @@
 //         ss.append("filename", file.name);
 //         ss.append("uuid",newUuid);
 //         ss.append("user_id",id);
-//         await fetch(`https://backend.shancloudservice.com/complete-upload`, { method: "POST", body: ss });
+//         await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/complete-upload`, { method: "POST", body: ss });
 //         setUploaded(0);
 //         setTotal(0);
         
@@ -93,12 +93,14 @@
 import React, { ChangeEvent, FormEvent, useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-function UploadFile({id,uppd}:{id:string,uppd:(sizee:number)=>void}){
+function UploadFile({id,uppd,spd}:{id:string,uppd:(sizee:number)=>void,spd:(spp:number)=>void}){
     const [file, setFile] = useState<File | null>(null);
     const [uploaded, setUploaded] = useState<number>(0);
     const [total, setTotal] = useState<number>(0);
     const [progress, setProgress] = useState<number>(0);
+    const [upbutton,setupbutton] = useState<boolean>(true);
     const [isDragging, setIsDragging] = useState<boolean>(false);
+    
     const packet_size = 1024*1024;
     useEffect(() => {
         if (total > 0) {
@@ -117,7 +119,7 @@ function UploadFile({id,uppd}:{id:string,uppd:(sizee:number)=>void}){
         fd.append("file", file);
         fd.append("packet_index", String(packet_index));
         fd.append("uuid", uuidd);
-        const res: Response = await fetch(`https://backend.shancloudservice.com/upload`, {
+        const res: Response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/upload`, {
             method: 'POST',
             body: fd
         });
@@ -128,6 +130,7 @@ function UploadFile({id,uppd}:{id:string,uppd:(sizee:number)=>void}){
 
     async function upload() {
         if (!file) return;
+        setupbutton(false);
         
         const total_packets = Math.ceil(file.size / packet_size);
         setTotal(total_packets);
@@ -135,8 +138,8 @@ function UploadFile({id,uppd}:{id:string,uppd:(sizee:number)=>void}){
         
         const init_up_data = new FormData();
         init_up_data.append("uuid", newUuid);
-        
-        await fetch(`https://backend.shancloudservice.com/init-upload`, {
+        const start = performance.now();
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/init-upload`, {
             method: 'POST',
             body: init_up_data
         });
@@ -153,18 +156,24 @@ function UploadFile({id,uppd}:{id:string,uppd:(sizee:number)=>void}){
         ss.append("filename", file.name);
         ss.append("uuid", newUuid);
         ss.append("user_id", id);
-        const res: Response = await fetch(`https://backend.shancloudservice.com/complete-upload`, { 
+        const res: Response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/complete-upload`, { 
             method: "POST", 
             body: ss 
         });
+        const end = performance.now()
+        const ans = end - start;
+        const speed = (file.size / (ans / 1000) / (1024 * 1024)).toFixed(2); // speed in MB/s
+        spd(parseFloat(speed));
         if(!res.ok){
             return;
         }
+        
         const data = await res.json();
         const tt: number = parseFloat(data.size);
         uppd(tt);
          setUploaded(0);
         setTotal(0);
+        setupbutton(true)
         setFile(null);
     }
 
@@ -240,7 +249,7 @@ function UploadFile({id,uppd}:{id:string,uppd:(sizee:number)=>void}){
                             <button 
                                 type="submit" 
                                 className="btn btn-primary w-full"
-                                disabled={progress > 0 && progress < 100}
+                                disabled={!upbutton}
                             >
                                 {progress > 0 && progress < 100 
                                     ? <span className="loading loading-spinner"></span>

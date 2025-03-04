@@ -23,7 +23,7 @@ const Form = () => {
       formData.append("email", username);
       formData.append("password", password);
 
-      const response = await fetch(`https://backend.shancloudservice.com/signin`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/signin`, {
         method: 'POST',
         body: formData,
       });
@@ -48,68 +48,68 @@ const Form = () => {
   }
 
   return (
-    <div className="min-h-screen bg-base-300 bg-[url('https://images.unsplash.com/photo-1594788094620-4579ad50c7fe?auto=format&fit=crop&q=80')] bg-cover bg-blend-soft-light flex flex-col items-center justify-center px-6 py-12 lg:px-8">
-      <div className="card w-full max-w-xl glass">
-        <div className="card-body">
-          <h2 className="card-title text-4xl font-bold justify-center mb-8">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-              🔐 Login
-            </span>
-          </h2>
+    <div className="min-h-screen bg-base-300 bg-cover bg-blend-soft-light flex flex-col items-center justify-center px-6 py-12 lg:px-8" style={{ backgroundImage: "url('/4882066.jpg')" }}>
+      <div className="w-full max-w-md bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20">
+      <div className="mb-8 text-center">
+        <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+        <p className="text-gray-400">Please sign in to your account</p>
+      </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text text-base-content/80">Username</span>
-              </label>
-              <input
-                type="text"
-                name="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter your username"
-                className="input input-bordered w-full bg-base-200/50"
-              />
-            </div>
-
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text text-base-content/80">Password</span>
-              </label>
-              <input
-                type="password"
-                name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                className="input input-bordered w-full bg-base-200/50"
-              />
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4 mt-8">
-              <Link
-                href="/signup"
-                className="btn bg-gradient-to-r from-secondary to-accent text-white border-none hover:brightness-110 transition-all duration-300 flex-1"
-              >
-                Sign Up
-              </Link>
-              <button
-                type="submit"
-                className="btn bg-gradient-to-r from-primary to-secondary text-white border-none hover:brightness-110 transition-all duration-300 flex-2"
-              >
-                🔥 Sign In
-              </button>
-            </div>
-          </form>
-
-          {status && (
-            <div className="text-center mt-4">
-              <div className="badge badge-success gap-2 p-4 text-lg">
-                {status}
-              </div>
-            </div>
-          )}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-2">
+        <label className="text-sm font-medium text-gray-300" htmlFor="username">
+          Email Address
+        </label>
+        <input
+          type="text"
+          name="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition duration-200"
+          placeholder="Enter your email"
+          required
+        />
         </div>
+
+        <div className="space-y-2">
+        <label className="text-sm font-medium text-gray-300" htmlFor="password">
+          Password
+        </label>
+        <input
+          type="password"
+          name="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition duration-200"
+          placeholder="Enter your password"
+          required
+        />
+        </div>
+
+        <button
+        type="submit"
+        className="w-full py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium transition duration-200 transform hover:scale-[1.02]"
+        >
+        Sign in
+        </button>
+      </form>
+
+      <div className="mt-6 text-center">
+        <p className="text-gray-400">
+        Don't have an account?{' '}
+        <Link href="/signup" className="text-blue-400 hover:text-blue-300 font-medium">
+          Create account
+        </Link>
+        </p>
+      </div>
+
+      {status && (
+        <div className="mt-4 text-center">
+        <div className="px-4 py-2 rounded-lg bg-green-500/20 text-green-400">
+          {status}
+        </div>
+        </div>
+      )}
       </div>
     </div>
   );

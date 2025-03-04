@@ -2,41 +2,46 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-base-300 bg-[url('https://images.unsplash.com/photo-1594788094620-4579ad50c7fe?auto=format&fit=crop&q=80')] bg-cover bg-blend-soft-light flex flex-col items-center justify-center px-6 py-12 lg:px-8">
-      <div className="text-center mb-12 backdrop-blur-sm p-8 rounded-3xl">
-        <h1 className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary mb-4 animate-pulse">
+    <div
+      className="min-h-screen bg-base-300 bg-cover bg-blend-soft-light flex flex-col items-center justify-center px-6 py-12 lg:px-8 relative overflow-hidden"
+      style={{ backgroundImage: "url('/4882066.jpg')" }}
+    >
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60"></div>
+
+      {/* Hero Content */}
+      <div className="text-center mb-12 backdrop-blur-md p-10 rounded-3xl border border-white/20 shadow-2xl relative z-10">
+        <h1 className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-pink-500 to-purple-600 animate-pulse drop-shadow-lg">
           V-Cloud
         </h1>
-        <p className="text-base-content/80 text-xl">Secure. Scalable. Simple.</p>
+        <p className="text-base-content/80 text-2xl mt-2 font-medium">
+          Secure. Scalable. Simple.
+        </p>
       </div>
-      
-      <div className="card w-96 glass shadow-xl border border-base-content/10">
+
+      {/* Card */}
+      <div className="card w-96 glass shadow-2xl border border-white/10 relative z-10 transition-all duration-300 hover:scale-105 hover:shadow-3xl">
         <div className="card-body">
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
               href="/signin"
-              className="btn btn-primary w-full sm:w-auto"
+              className="btn btn-primary w-full sm:w-auto transition-all duration-300 hover:scale-110 hover:shadow-lg"
             >
               Sign In
             </Link>
             <Link
               href="/signup"
-              className="btn btn-secondary w-full sm:w-auto"
+              className="btn btn-secondary w-full sm:w-auto transition-all duration-300 hover:scale-110 hover:shadow-lg"
             >
               Sign Up
             </Link>
           </div>
         </div>
       </div>
-      
-      <div className="mt-8 text-base-content/60 text-sm">
-        <div className="badge badge-outline gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z" />
-          </svg>
-          Experience the next generation of cloud computing
-        </div>
-      </div>
+
+      {/* Floating Particles */}
+      <div className="absolute top-1/4 left-10 w-16 h-16 bg-blue-500 rounded-full blur-3xl opacity-30 animate-float"></div>
+      <div className="absolute bottom-10 right-16 w-24 h-24 bg-pink-500 rounded-full blur-3xl opacity-30 animate-float"></div>
     </div>
   );
 }
