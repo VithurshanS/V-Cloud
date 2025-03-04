@@ -58,7 +58,7 @@ func registerUser(email string, password string) error {
 	return nil
 }
 
-func addfileentry(uuid string, actname string, ftype string, fsize float64, owner string) (int,string) {
+func addfileentry(uuid string, actname string, ftype string, fsize float64,is_accepted bool ,owner string) (int,string) {
 	var count int
 	fmt.Println("dede", fsize)
 	checkQuery := "SELECT COUNT(*) FROM metadata WHERE name_at_server = ? and owner = ?"
@@ -70,8 +70,8 @@ func addfileentry(uuid string, actname string, ftype string, fsize float64, owne
 	if count > 0 {
 		return 202,""
 	}
-	quer := "insert into metadata (name_at_server,actualname,filetype,file_size,owner) values (?,?,?,?,?);"
-	_, erri := db.Exec(quer, uuid, actname, ftype, fsize, owner)
+	quer := "insert into metadata (name_at_server,actualname,filetype,file_size,is_accepted,owner) values (?,?,?,?,?,?);"
+	_, erri := db.Exec(quer, uuid, actname, ftype, fsize,is_accepted, owner)
 	if erri != nil {
 		fmt.Println(erri)
 		return 202,""
@@ -117,8 +117,8 @@ func getfileloc(id int) (string,string, error) {
 
 }
 
-func getfiles(owner_id string) ([]File, error) {
-	rows, err := db.Query("SELECT id, actualname, filetype,file_size, date FROM metadata WHERE owner = ?;", owner_id)
+func getfiles(owner_id string,accepted bool) ([]File, error) {
+	rows, err := db.Query("SELECT id, actualname, filetype,file_size, date FROM metadata WHERE owner = ? and is_accepted = ?;", owner_id, accepted)
 	if err != nil {
 		return nil, err
 	}
@@ -249,7 +249,7 @@ func sharefile(c *gin.Context) {
 		c.JSON(500, gin.H{"message": "error converting file size"})
 		return
 	}
-	result,siz := addfileentry(fi.Nameatserver, fi.Actualname, fi.Ftype, fsize, id)
+	result,siz := addfileentry(fi.Nameatserver, fi.Actualname, fi.Ftype, fsize, false,id)
 	if result == 202 {
 		c.JSON(500, gin.H{"message": "error sharing file"})
 		return
@@ -259,10 +259,38 @@ func sharefile(c *gin.Context) {
 }
 
 // ------------------------------------------------------------download section----------------------------------------------------------------------------
+
+
+
+
+func getsharedfiles(c *gin.Context) {
+	//filelist,err:=os.ReadDir("./userfiles/");
+	owner := c.PostForm("user_id")
+	results, errr := getfiles(owner,false)
+	if errr != nil {
+		fmt.Println("podang")
+		c.JSON(400, gin.H{"message": "error retrieving files from database"})
+		return
+	}
+	r:= db.QueryRow("select used_storage from user where user_id = ?",owner);
+	var siz string;
+	r.Scan(&siz);
+	c.JSON(200, gin.H{"files": results,"size":siz})
+	// if(err!=nil){
+	// 	fmt.Println("cannot read userfiles");
+	// 	c.JSON(400,gin.H{"message":"files not found"});
+	// }
+	// var fnames [] string;
+	// for _,name:= range filelist{
+	// 	fnames = append(fnames, name.Name());
+	// }
+	// c.JSON(200,gin.H{"files":fnames});
+}
+
 func get_file(c *gin.Context) {
 	//filelist,err:=os.ReadDir("./userfiles/");
 	owner := c.PostForm("user_id")
-	results, errr := getfiles(owner)
+	results, errr := getfiles(owner,true)
 	if errr != nil {
 		fmt.Println("podang")
 		c.JSON(400, gin.H{"message": "error retrieving files from database"})
@@ -415,7 +443,7 @@ func completeUpload(c *gin.Context) {
 	}
 	fmt.Println("file deleted successfully", uuid)
 
-	result,siz := addfileentry(uuid, actualname, filetype, fileSizeInGB, ownerid)
+	result,siz := addfileentry(uuid, actualname, filetype, fileSizeInGB,true, ownerid)
 	if result == 202 {
 		fmt.Println("there is an error when inserting the entry")
 	} else {
@@ -424,6 +452,30 @@ func completeUpload(c *gin.Context) {
 
 	c.JSON(200, gin.H{"message": "fileuploaded succesfully","size":siz})
 
+}
+
+func rejectfile(c *gin.Context){
+	id:= c.PostForm(("file_id"))
+	query := "DELETE FROM metadata WHERE id = ?"
+	_, err := db.Exec(query, id)
+	if err != nil {
+		fmt.Println("error updating file acceptance", err)
+		c.JSON(500, gin.H{"message": "error updating file acceptance"})
+		return
+	}
+	c.JSON(200, gin.H{"message": "file accepted successfully"})
+}
+
+func acceptfile(c *gin.Context){
+	id:= c.PostForm(("file_id"))
+	query := "UPDATE metadata SET is_accepted = true WHERE id = ?"
+	_, err := db.Exec(query, id)
+	if err != nil {
+		fmt.Println("error updating file acceptance", err)
+		c.JSON(500, gin.H{"message": "error updating file acceptance"})
+		return
+	}
+	c.JSON(200, gin.H{"message": "file accepted successfully"})
 }
 
 func deletefile(c *gin.Context) {
@@ -504,6 +556,9 @@ func main() {
 	r.POST("/authenticate", authenticate)
 	r.POST("/share", sharefile)
 	r.POST("/deletefile", deletefile)
+	r.POST("/accept",acceptfile)
+	r.POST("/reject",rejectfile)
+	r.POST("/get-shared-files",getsharedfiles)
 	r.Run("0.0.0.0:8080")
 
 }
